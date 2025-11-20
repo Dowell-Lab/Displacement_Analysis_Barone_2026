@@ -327,10 +327,10 @@ def antisense_sense_coverage_filter(metadata_df, res_dir, coverage_dir, outdir, 
             
             df = coverage_data.sort_values('Gene')
             
-            # Filter coverage data to only include genes that pass 
+            # Filter coverage data to only include relevant genes
             coverage_data = coverage_data[coverage_data['Gene'].isin(genes_passing_all_samples)]
             coverage_data = coverage_data.sort_values("Gene")
-            
+
             # Keep only ANTISENSE coverage (where cov_strand != gene strand)
             antisense_coverage = coverage_data[coverage_data['cov_strand'] != coverage_data['strand']]
 
@@ -339,16 +339,22 @@ def antisense_sense_coverage_filter(metadata_df, res_dir, coverage_dir, outdir, 
 
             # Filter based on the coverage threshold (antisense coverage must be <= threshold)
             genes_meeting_antisense_threshold = antisense_coverage[antisense_coverage['cov4'] <= coverage_thresh]['Gene'].unique()
-                    
+
             genes_meeting_antisense_threshold = set(genes_meeting_antisense_threshold)
             print(f"Sample {samp} - Genes meeting antisense coverage threshold: {len(genes_meeting_antisense_threshold)}")
             
-            # Filter based on the coverage threshold (sense coverage must be >= threshold)
-            genes_meeting_sense_threshold = sense_coverage[sense_coverage['cov4'] >= 0.001]['Gene'].unique()
-            genes_meeting_sense_threshold = set(genes_meeting_sense_threshold)
-            print(f"Sample {samp} - Genes meeting sense coverage threshold: {len(genes_meeting_sense_threshold)}")
-            
-            # keep genes that pass
+            # Lowest depth/quality experiment -- U2OS/Arsenic data
+            # Tighter 3' end coverage cutoff to address the low quality of this sample
+            if experiment_name in ['Meta-Nina-Arsenic', 'Nina-Arsenic', 'U2OS-SRRs', 'U2OS-Specific']:
+                
+                genes_meeting_sense_threshold = sense_coverage[sense_coverage['cov4'] >= 0.0075]['Gene'].unique()
+                
+            # Everything else is at a cutoff of 0.001
+            else:
+                
+                genes_meeting_sense_threshold = sense_coverage[sense_coverage['cov4'] >= 0.001]['Gene'].unique()
+
+            # Only keep genes that pass BOTH antisense and sense thresholds
             genes_meeting_threshold = genes_meeting_antisense_threshold.intersection(genes_meeting_sense_threshold)
             print(f"Sample {samp} - Genes meeting BOTH thresholds: {len(genes_meeting_threshold)}")
 
