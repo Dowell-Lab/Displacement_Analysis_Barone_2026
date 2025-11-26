@@ -1,8 +1,8 @@
 #!/bin/bash        
-#SBATCH --job-name=bedgraph_generator
-#SBATCH --output=/scratch/Users/geba9152/LIET-3end-analysis/bedGraph_generation/eofiles/%x_%j.out                     
-#SBATCH --error=/scratch/Users/geba9152/LIET-3end-analysis/bedGraph_generation/eofiles/%x_%j.err
-#SBATCH --mail-user=geba9152@colorado.edu
+#SBATCH --job-name=job_name
+#SBATCH --output=/path-to-eofiles/%x_%j.out                    
+#SBATCH --error=/path-to-eofiles/%x_%j.err
+#SBATCH --mail-user=email@xxx.edu
 #SBATCH --mail-type=FAIL
 #SBATCH -p long
 #SBATCH --time=90:00:00      

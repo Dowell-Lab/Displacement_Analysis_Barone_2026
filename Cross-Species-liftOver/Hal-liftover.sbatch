@@ -1,14 +1,14 @@
 #!/bin/bash
-##SBATCH --job-name=hal-test
+##SBATCH --job-name=job_name
 ##SBATCH --mail-type=ALL
-##SBATCH --mail-user=geba9152@colorado.edu
+##SBATCH --mail-user=email@xxx.edu
 ##SBATCH --nodes=1
 ##SBATCH --cpus-per-task=1
 ##SBATCH --mem=5GB
 ##SBATCH --time=01:00:00
 ##SBATCH --partition=short
-##SBATCH --output=/Shares/txpnevol/geba9152/447-mammalian-hal-liftOver/eofiles/%x.%j.out
-##SBATCH --error=/Shares/txpnevol/geba9152/447-mammalian-hal-liftOver/eofiles/%x.%j.err
+##SBATCH --output=/path-to-eofiles/%x_%j.out
+##SBATCH --error=/path-to-eofiles/%x_%j.err
 
 # Load metadata #
 echo Job: $SLURM_JOB_NAME with ID $SLURM_JOB_ID
@@ -21,12 +21,14 @@ echo Using $SLURM_NTASKS processors, across $SLURM_NNODES nodes, with $SLURM_JOB
 module load bedtools/2.25.0
 module load hdf5/1.10.5
 
-# Paths/variables
+# Paths/variables #
 #species=${1} # eg: panTro6
 #species_name=${2} #eg: Pan_troglodytes
 species="rheMac10"
 species_name="Macaca_mulatta"
 
+# Uncomment out based on which lift over file using #
+#hal_file="/scratch/Shares/public/zoonomia/241-mammalian-2020v2.ha"
 hal_file="/scratch/Shares/public/zoonomia/447-mammalian-2022v1.hal"
 inputBED="/scratch/Users/geba9152/LIET-3end-analysis/daniel-animal-liet/ortholog-output/MANE-annotation-overlaps-across-all-species/overlapping_orthologs_Hal_format.MANE.bed"
 halexe="/Users/geba9152/repos/hal/bin/"
