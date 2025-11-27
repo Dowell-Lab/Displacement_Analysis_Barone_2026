@@ -60,7 +60,7 @@ Scripts for gene filtering and curation workflow.
 > **Note:** Gene filtering in the cross-species analyses follows the same procedure as the human analysis, but omits the annotation isolation step. Additionally, each subdirectory contains a `packages.txt` file with required software versions and dependencies.
 
 References:
-1. Manni, M., Berkeley, M.R., Seppey, M., Sim˜ao, F.A., Zdobnov, E.M.: Busco update: Novel and streamlined workflows along with broader and deeper phylogenetic coverage for scoring of eukaryotic, prokaryotic, and viral genomes. Molecular Biology and Evolution 38(10), 4647–4654 (2021) https://doi.org/10.1093/molbev/msab199
+1. Manni, M., Berkeley, M.R., Seppey, M., Simao, F.A., Zdobnov, E.M.: Busco update: Novel and streamlined workflows along with broader and deeper phylogenetic coverage for scoring of eukaryotic, prokaryotic, and viral genomes. Molecular Biology and Evolution 38(10), 4647–4654 (2021) https://doi.org/10.1093/molbev/msab199
 2. Zoonomia Consortium: A comparative genomics multitool for scientific discovery and conservation. Nature 587, 240–245 (2020) https://doi.org/10.1038/s41586-020-2876-6
 3. Kuderna, L.F.K., Ulirsch, J.C., Rashid, S., et al.: Identification of constrained sequence elements across 239 primate genomes. Nature 625, 735–742 (2024) https://doi.org/10.1038/s41586-023-06798-8
 4. Stanley, J.T., Barone, G.E.F., Townsend, H.A., Sigauke, R.F., Allen, M.A., Dowell, R.D.: LIET model: capturing the kinetics of RNA polymerase from loading to termination. Nucleic Acids Res 53(7), 246 (2025)
