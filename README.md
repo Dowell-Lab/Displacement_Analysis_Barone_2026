@@ -52,10 +52,10 @@ Scripts for gene filtering and curation workflow.
 **Files:**
 - **`LIET-Input-File-Generation-Human.ipynb`**: Jupyter Notebook for generating LIET [4] input files (human experiments)
 - **`annotation-isolation-filter.sbatch`**: Script for identifying annotation-isolated genes (pre-emptive step before running LIET)
-- **`create_bedfiles.py`**: Python script that creates BED files centered on μ_T
+- **`create_bedfiles.py`**: Python script that creates BED files centered on $\mu_T$
 - **`gene-filtering.py`**: Python script that performs the majority of gene curation (filters genes post-LIET run)
 - **`pipeline.sbatch`**: SBATCH script that runs the gene curation pipeline
-- **`tfit_model.sh`** & **`tfit-config/`**: Scripts for running Tfit on constrained regions (μ_T regions)
+- **`tfit_model.sh`** & **`tfit-config/`**: Scripts for running Tfit on constrained regions ($\mu_T$ regions)
 
 > **Note:** Gene filtering in the cross-species analyses follows the same procedure as the human analysis, but omits the annotation isolation step. Additionally, each subdirectory contains a `packages.txt` file with required software versions and dependencies.
 
