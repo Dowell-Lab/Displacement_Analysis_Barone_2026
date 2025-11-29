@@ -1,6 +1,6 @@
 # Disassociation Meta-Analysis
 
-This repository accumulates data processing scripts, intermediate results, and final results in Barone et al. (2025). New sequencing data mentioned in this paper can be found at the following GEO accession numbers:
+This repository contains data processing scripts from Barone et al. (2025). New sequencing data mentioned in this paper can be found at the following GEO accession numbers:
 
 | Description | Accession Numbers |
 |-------------|-------------------|
