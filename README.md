@@ -1,4 +1,4 @@
-# Disassociation Meta-Analysis
+# RNA Polymerase II Termination (Displacement) Meta-Analysis
 
 This repository contains data processing scripts from Barone et al. (2025). New sequencing data mentioned in this paper can be found at the following GEO accession numbers:
 
