@@ -80,9 +80,9 @@ def violins_across_samples_subset(T_clust_genes,
     violin_y_ticks = ax.get_yticks()
     
     if column_prefix == "mT-adj":
-        ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in violin_y_ticks], fontsize=14)
+        ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in violin_y_ticks], fontsize=14)
         ax.set_title(f"{param_dict.get(column_prefix, column_prefix)}", fontsize=16)
-        ax.set_ylabel(f"{param_dict.get(column_prefix, column_prefix)}-TCS {label}", fontsize=16)
+        ax.set_ylabel(f"{param_dict.get(column_prefix, column_prefix)}-A3E {label}", fontsize=16)
         ax.set_xlabel("Genes", fontsize=16)
         ax.tick_params(axis='x', labelsize=0)
         

@@ -33,6 +33,7 @@ Scripts for cross-species analyses.
 - **`busco.sbatch`**: Example script for running Benchmarking Universal Single-Copy Orthologs (BUSCO) [1]
 - **`Hal-liftover.sbatch`**: Example script for utilizing halLiftover to lift over annotations from one species to another using Progressive Cactus multiple-genome aligner [2,3]. Installation: [HAL toolkit](https://github.com/ComparativeGenomicsToolkit/hal)
 - **`LIET-Input-File-Generation-Cross-Species.ipynb`**: Jupyter Notebook for generating LIET [4] input files (cross-species)
+- **`all_species.sbatch`**: Script using Progressive Cactus multiple-genome aligner for maf (multiple alignment format) file generation [2,3]. Installation: [HAL toolkit](https://github.com/ComparativeGenomicsToolkit/hal)
 
 ---
 

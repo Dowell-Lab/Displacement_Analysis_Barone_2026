@@ -9,7 +9,7 @@ import matplotlib.gridspec as gridspec
 
 # Comparison between two samples, no clustering or stat testing
 
-# Scatter comparing mT (mT-TCS) values between two samples
+# Scatter comparing mT (mT-A3E) values between two samples
 # Looks at % of genes outside of two sigma (2-sided)
 def perturbation_comparison_twosided_no_clust_scatter_mT(two_std, 
                                        plotting_dict_exp,
@@ -87,8 +87,8 @@ def perturbation_comparison_twosided_no_clust_scatter_mT(two_std,
     )
 
     # labels/title
-    ax.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize=16)
-    ax.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize=16)
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=16)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=16)
     ax.set_title(f"{title}", fontsize=17, color=color_lab)
     
     # annotate gene if provided
@@ -123,8 +123,8 @@ def perturbation_comparison_twosided_no_clust_scatter_mT(two_std,
     # format tick labels
     x_ticks = ax.get_xticks()
     y_ticks = ax.get_yticks()
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
 
     ax.legend(fontsize=12, loc='lower right')
 
@@ -132,7 +132,7 @@ def perturbation_comparison_twosided_no_clust_scatter_mT(two_std,
     plt.savefig(outpath)
     plt.show()
 
-# Scatter comparing mT (mT-TCS) values between two samples
+# Scatter comparing mT (mT-A3E) values between two samples
 # Looks at % of genes above of two sigma (1-sided)
 def perturbation_comparison_above_no_clust_scatter_mT(two_std, 
                                        plotting_dict_exp,
@@ -210,8 +210,8 @@ def perturbation_comparison_above_no_clust_scatter_mT(two_std,
     )
 
     # labels/title
-    ax.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize=16)
-    ax.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize=16)
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=16)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=16)
     ax.set_title(f"{title}", fontsize=17, color=color_lab)
     
     # annotate specific gene if provided
@@ -246,8 +246,8 @@ def perturbation_comparison_above_no_clust_scatter_mT(two_std,
     # format tick labels
     x_ticks = ax.get_xticks()
     y_ticks = ax.get_yticks()
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
 
     ax.legend(fontsize=12, loc='lower right')
 
@@ -257,7 +257,7 @@ def perturbation_comparison_above_no_clust_scatter_mT(two_std,
 
 # Comparisons in Figure 1
 
-# Comparison between celltypes mT-TCS vs. mT-TCS
+# Comparison between celltypes mT-A3E vs. mT-A3E
 def mT_cross_ct_comparison_singluar_comparison(
     merged_df,
     sample1,
@@ -268,7 +268,7 @@ def mT_cross_ct_comparison_singluar_comparison(
 ):
     '''
     * Takes: 
-    - merged_df: dataframe containing mT-TCS information on two samples
+    - merged_df: dataframe containing mT-A3E information on two samples
     - Sample 1 name
     - Sample 2 name
     - Outpath
@@ -332,8 +332,8 @@ def mT_cross_ct_comparison_singluar_comparison(
     )
 
     # labels and ticks
-    plt.xlabel(f"{lab1} $\mu_T$-TCS", fontsize=14)
-    plt.ylabel(f"{lab2} $\mu_T$-TCS", fontsize=14)
+    plt.xlabel(f"{lab1} |$\mu_T$-A3E|", fontsize=14)
+    plt.ylabel(f"{lab2} |$\mu_T$-A3E|", fontsize=14)
     plt.legend(loc="upper left", fontsize=11)
     plt.tight_layout()
 
@@ -344,8 +344,8 @@ def mT_cross_ct_comparison_singluar_comparison(
     yticks = ax.get_yticks()
     ax.set_xticks(xticks)
     ax.set_yticks(yticks)
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in xticks], fontsize=14, rotation=45)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in yticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in xticks], fontsize=14, rotation=45)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in yticks], fontsize=14)
 
     plt.tight_layout()
     plt.savefig(outpath)
@@ -420,20 +420,20 @@ def replicate_comparison_scatter_mT_fig1(plotting_dict_exp,
     )
 
     # formatting
-    plt.xlabel(f"{label} Rep1 $\mu_T$-TCS", fontsize=14)
-    plt.ylabel(f"{label} Rep2 $\mu_T$-TCS", fontsize=14)
+    plt.xlabel(f"{label} Rep1 |$\mu_T$-A3E|", fontsize=14)
+    plt.ylabel(f"{label} Rep2 |$\mu_T$-A3E|", fontsize=14)
     plt.legend(loc="upper left", fontsize=11)
     plt.tight_layout()
 
     plt.xlim(xlimylim)
     plt.ylim(xlimylim)
 
-    # replace 0 tick with TCS on x-axis and y-axis
+    # replace 0 tick with A3E on x-axis and y-axis
     xticks = ax.get_xticks()
     yticks = ax.get_yticks()
 
-    xtick_labels = ["TCS" if x == 0 else f"{int(x):,}" for x in xticks]
-    ytick_labels = ["TCS" if y == 0 else f"{int(y):,}" for y in yticks]
+    xtick_labels = ["A3E" if x == 0 else f"{int(x):,}" for x in xticks]
+    ytick_labels = ["A3E" if y == 0 else f"{int(y):,}" for y in yticks]
 
     ax.set_xticks(xticks)
     ax.set_xticklabels(xtick_labels, fontsize=14, rotation=45)
@@ -532,18 +532,18 @@ def replicate_comparison_no_clust_scatter_mT(plotting_dict_exp,
     )
     
     # formatting
-    plt.xlabel(f"{label} Rep1 TCS-$\mu_T$", fontsize=14)
-    plt.ylabel(f"{label} Rep2 TCS-$\mu_T$", fontsize=14)
+    plt.xlabel(f"{label} Rep1 A3E-$\mu_T$", fontsize=14)
+    plt.ylabel(f"{label} Rep2 A3E-$\mu_T$", fontsize=14)
     plt.legend(loc="upper left", fontsize=11)
     plt.tight_layout()
     
-    # Replace 0 tick with TCS on x-axis and y-axis
+    # Replace 0 tick with A3E on x-axis and y-axis
     xticks = ax.get_xticks()
     yticks = ax.get_yticks()
     
-    # Format tick labels, replacing 0 with "TCS"
-    xtick_labels = ["TCS" if x == 0 else f"{int(x):,}" for x in xticks]
-    ytick_labels = ["TCS" if y == 0 else f"{int(y):,}" for y in yticks]
+    # Format tick labels, replacing 0 with "A3E"
+    xtick_labels = ["A3E" if x == 0 else f"{int(x):,}" for x in xticks]
+    ytick_labels = ["A3E" if y == 0 else f"{int(y):,}" for y in yticks]
     
     ax.set_xticks(xticks)
     ax.set_xticklabels(xtick_labels, fontsize=14, rotation=45)
@@ -656,20 +656,20 @@ def replicate_comparison_scatter_mT(plotting_dict_exp,
     )
 
     # formatting
-    plt.xlabel(f"{label} Rep1 TCS-$\mu_T$", fontsize = 14)
-    plt.ylabel(f"{label} Rep2 TCS-$\mu_T$", fontsize = 14)
+    plt.xlabel(f"{label} Rep1 A3E-$\mu_T$", fontsize = 14)
+    plt.ylabel(f"{label} Rep2 A3E-$\mu_T$", fontsize = 14)
     plt.legend(loc="upper left", fontsize = 11)
     plt.tight_layout()
 
 #     plt.xlim(-1000,20000)
 #     plt.ylim(-1000,20000)
 
-    # replace 0 tick with "TCS" on x-axis and y-axis
+    # replace 0 tick with "A3E" on x-axis and y-axis
     xticks = ax.get_xticks()
     yticks = ax.get_yticks()
 
-    xtick_labels = ["TCS" if x == 0 else f"{int(x):,}" for x in xticks]
-    ytick_labels = ["TCS" if y == 0 else f"{int(y):,}" for y in yticks]
+    xtick_labels = ["A3E" if x == 0 else f"{int(x):,}" for x in xticks]
+    ytick_labels = ["A3E" if y == 0 else f"{int(y):,}" for y in yticks]
 
     ax.set_xticks(xticks)
     ax.set_xticklabels(xtick_labels, fontsize = 14,rotation=45)
@@ -821,8 +821,8 @@ def perturbation_comparison_scatter_mT_cluster_stats(two_std,
         color=color_perturbed, alpha=0.6, s=60, edgecolor="black", linewidth=0.5, label="GC-Rich Subset", ax=ax1
     )
 
-    ax1.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize = 16)
-    ax1.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize = 16)
+    ax1.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize = 16)
+    ax1.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize = 16)
     ax1.set_title(f"{title}", fontsize = 17, color = color_lab)
     
     label_gene_cf1 = df_c1[df_c1["Gene"] == Gene_to_Lab]
@@ -862,11 +862,11 @@ def perturbation_comparison_scatter_mT_cluster_stats(two_std,
     ax1.set_xlim(xlimylim)
     ax1.set_ylim(xlimylim)
 
-    # Replace 0 ticks with 'TCS' in scatter plot
+    # Replace 0 ticks with 'A3E' in scatter plot
     x_ticks = ax1.get_xticks()
     y_ticks = ax1.get_yticks()
-    ax1.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize = 14, rotation = 20)
-    ax1.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize = 14)
+    ax1.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize = 14, rotation = 20)
+    ax1.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize = 14)
 
     violin_df["Cluster"] = violin_df["Cluster"].replace({
         "1st Cluster": "Upstream T-rich Subset",
@@ -890,7 +890,7 @@ def perturbation_comparison_scatter_mT_cluster_stats(two_std,
     handles, labels = ax2.get_legend_handles_labels()
     
     ax2.legend(handles[:2], labels[:2], fontsize = 12)
-    # ax2.set_title("TCS-$\mu_T$ \n(1st Subsample)")
+    # ax2.set_title("A3E-$\mu_T$ \n(1st Subsample)")
 
     ax2.set_title(f"$\mu_T$ {label2} - $\mu_T$ {label1}", fontsize = 16, color = color_lab)
 
@@ -931,7 +931,7 @@ def mT_cross_species(
 ):
     '''
     * Takes: 
-    - merged_df: dataframe containing mT-TCS information on two samples
+    - merged_df: dataframe containing mT-A3E information on two samples
     - Sample 1 name
     - Sample 2 name
     - Outpath
@@ -1014,8 +1014,8 @@ def mT_cross_species(
             print(f"Warning: Gene '{label_gene}' not found in the dataframe")
     
     # Labels and ticks
-    plt.xlabel(f"{lab1} TCS-$\mu_T$", fontsize=14)
-    plt.ylabel(f"{lab2} TCS-$\mu_T$", fontsize=14)
+    plt.xlabel(f"{lab1} A3E-$\mu_T$", fontsize=14)
+    plt.ylabel(f"{lab2} A3E-$\mu_T$", fontsize=14)
     plt.legend(loc="upper left", fontsize=11)
     plt.tight_layout()
     plt.xlim(xlimylim)
@@ -1024,8 +1024,8 @@ def mT_cross_species(
     yticks = ax.get_yticks()
     ax.set_xticks(xticks)
     ax.set_yticks(yticks)
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in xticks], fontsize=14, rotation=45)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in yticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in xticks], fontsize=14, rotation=45)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in yticks], fontsize=14)
     plt.tight_layout()
     plt.savefig(outpath)
     plt.show()
@@ -1033,7 +1033,7 @@ def mT_cross_species(
 
 # Binomial scatters
 
-# Scatter comparing mT (mT-TCS) values between two samples
+# Scatter comparing mT (mT-A3E) values between two samples
 # Looks at % of genes above two sigma (1-sided)
 def perturbation_comparison_scatter_mT_all_genes_above_2sigma(two_std,
                                                      plotting_dict_exp,
@@ -1109,8 +1109,8 @@ def perturbation_comparison_scatter_mT_all_genes_above_2sigma(two_std,
     ax.scatter(merged_df[f"mT_adj_{sample1}"], merged_df[f"mT_adj_{sample2}"],
               color='grey', alpha=0.4, s=60, edgecolor='black', linewidth=0.5)
     
-    ax.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize=16)
-    ax.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize=16)
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=16)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=16)
     ax.set_title(f"{title}", fontsize=17, color=color_lab)
     
     if Gene_to_Lab:
@@ -1145,8 +1145,8 @@ def perturbation_comparison_scatter_mT_all_genes_above_2sigma(two_std,
     # tick labels
     x_ticks = ax.get_xticks()
     y_ticks = ax.get_yticks()
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
     
     ax.legend(fontsize=12, loc='lower right')
     
@@ -1164,7 +1164,7 @@ def perturbation_comparison_scatter_mT_all_genes_above_2sigma(two_std,
         'pval': pval
     }
 
-# Scatter comparing mT (mT-TCS) values between two samples
+# Scatter comparing mT (mT-A3E) values between two samples
 # Looks at % of genes below two sigma (1-sided)
 def perturbation_comparison_scatter_mT_all_genes_below_2sigma(two_std,
                                                      plotting_dict_exp,
@@ -1244,8 +1244,8 @@ def perturbation_comparison_scatter_mT_all_genes_below_2sigma(two_std,
               color='grey', alpha=0.4, s=60, edgecolor='black', linewidth=0.5)
     
     # labels and title
-    ax.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize=16)
-    ax.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize=16)
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=16)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=16)
     ax.set_title(f"{title}", fontsize=17, color=color_lab)
     
     if Gene_to_Lab:
@@ -1279,8 +1279,8 @@ def perturbation_comparison_scatter_mT_all_genes_below_2sigma(two_std,
     # tick labels
     x_ticks = ax.get_xticks()
     y_ticks = ax.get_yticks()
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
     
     ax.legend(fontsize=12, loc='lower right')
     
@@ -1298,7 +1298,7 @@ def perturbation_comparison_scatter_mT_all_genes_below_2sigma(two_std,
         'pval': pval
     }
 
-# Scatter comparing mT (mT-TCS) values between two samples
+# Scatter comparing mT (mT-A3E) values between two samples
 # Looks at % of genes outside two sigma (2-sided)
 def perturbation_comparison_scatter_mT_all_genes_outside_2sigma(two_std,
                                                      plotting_dict_exp,
@@ -1374,8 +1374,8 @@ def perturbation_comparison_scatter_mT_all_genes_outside_2sigma(two_std,
     ax.scatter(merged_df[f"mT_adj_{sample1}"], merged_df[f"mT_adj_{sample2}"],
               color=color_perturbed, alpha=0.8, s=60, edgecolor='black', linewidth=0.5)
     
-    ax.set_xlabel(f"{label1} $\mu_T$-TCS", fontsize=16)
-    ax.set_ylabel(f"{label2} $\mu_T$-TCS", fontsize=16)
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=16)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=16)
     ax.set_title(f"{title}", fontsize=17, color=color_lab)
     
     if Gene_to_Lab:
@@ -1409,8 +1409,8 @@ def perturbation_comparison_scatter_mT_all_genes_outside_2sigma(two_std,
 
     x_ticks = ax.get_xticks()
     y_ticks = ax.get_yticks()
-    ax.set_xticklabels(["TCS" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
-    ax.set_yticklabels(["TCS" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
+    ax.set_xticklabels(["A3E" if x == 0 else f"{int(x):,}" for x in x_ticks], fontsize=14, rotation=20)
+    ax.set_yticklabels(["A3E" if y == 0 else f"{int(y):,}" for y in y_ticks], fontsize=14)
     
     ax.legend(fontsize=12, loc='lower right')
     

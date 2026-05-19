@@ -58,12 +58,12 @@ def plot_fits(workdir,
                 # Call plotting function
                 rp.LIET_ax(ax, **model_params, strand=strand, xvals=xvals, data=(preads, nreads), nbins=1000)
                 
-                plt.axvline(x=x_value, color='k', linewidth=1, ymin=0.2, ymax=0.3, label = "TCS")
+                plt.axvline(x=x_value, color='k', linewidth=1, ymin=0.2, ymax=0.3, label = "A3E")
                 
 #                 plt.ylim([-0.00004, 0.00015])
                 plt.ylim([-0.00004, 0.0001])
 
-                # Replace 0 x-tick with 'TSS' and add 'TCS' label at x_value
+                # Replace 0 x-tick with 'TSS' and add 'A3E' label at x_value
                 ticks = ax.get_xticks()
                 tick_labels = []
                 
@@ -71,7 +71,7 @@ def plot_fits(workdir,
                     if t == 0:
                         tick_labels.append('TSS')
                     elif t == x_value:
-                        tick_labels.append('TCS')
+                        tick_labels.append('A3E')
                     else:
                         tick_labels.append(f'{int(t)}')
 

@@ -90,8 +90,8 @@ def count_bases(seqs, window):
     
     return anew, tnew, cnew, gnew, nnew
 
-# Plots base composition in a dynamic grid (adjustable to how many fastas given) at TCS
-def count_and_plot_base_composition_dynamic_grid_TCS(fadir_dict, 
+# Plots base composition in a dynamic grid (adjustable to how many fastas given) at A3E
+def count_and_plot_base_composition_dynamic_grid_A3E(fadir_dict, 
                                                  outdir):
     """
     * Takes: 
@@ -168,7 +168,7 @@ def count_and_plot_base_composition_dynamic_grid_TCS(fadir_dict,
             ax.set_xlabel('Distance (bp)', fontsize=18)
 
         xticks = ax.get_xticks()
-        xtick_labels = [r'TCS' if int(x) == 0 else str(int(x)) for x in xticks]
+        xtick_labels = [r'A3E' if int(x) == 0 else str(int(x)) for x in xticks]
         ax.set_xticks(xticks)
         ax.set_xticklabels(xtick_labels, fontsize=18)
         ax.tick_params(axis='y', labelsize=18)

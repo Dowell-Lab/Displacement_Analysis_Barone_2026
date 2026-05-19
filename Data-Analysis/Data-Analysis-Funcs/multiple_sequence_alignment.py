@@ -108,10 +108,10 @@ def plot_msa_mT(msa_path,
     current_ticks = ax.get_xticks()
     new_labels = [str(int(tick)) for tick in current_ticks]
 
-    # label TCS
+    # label A3E
     target_idx = np.argmin(np.abs(current_ticks - 5000))
     if current_ticks[target_idx] > 0 and current_ticks[target_idx] <= aln_len:
-        new_labels[target_idx] = "TCS"  
+        new_labels[target_idx] = "A3E"  
 
     ax.set_xticks(current_ticks) 
     ax.set_xticklabels(new_labels)  
@@ -237,7 +237,7 @@ def plot_base_content_single_gene_AT(gene,
     
     max_len = max(len(human_base_content['A']), len(rhesus_base_content['A']))
     xticks = np.arange(0, max_len, 2)
-    xlabels = [("TCS" if i == 0 else str(i * window_size)) for i in xticks]
+    xlabels = [("A3E" if i == 0 else str(i * window_size)) for i in xticks]
     axs[1].set_xticks(xticks)
     axs[1].set_xticklabels(xlabels, fontsize=13, rotation=45)
     axs[1].set_xlabel("Position (bp)", fontsize=13)

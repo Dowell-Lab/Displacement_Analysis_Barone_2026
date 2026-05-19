@@ -88,20 +88,20 @@ def plot_kde_of_priors_perturb_overlay(df,
 
         try:
             zero_index = np.where(np.isclose(ticks, 0))[0][0]
-            labels[zero_index] = 'TCS'
+            labels[zero_index] = 'A3E'
         except IndexError:
             new_ticks = sorted(list(ticks) + [0])
             new_labels = [str(tick) for tick in new_ticks]
             zero_index = new_ticks.index(0)
-            new_labels[zero_index] = 'TCS'
+            new_labels[zero_index] = 'A3E'
             axes_mt[i].set_xticks(new_ticks)
             labels = new_labels
 
         axes_mt[i].set_xticklabels(labels, fontsize=13, rotation = 20)
 
-    axes_mt[-1].set_xlabel('$\mu_T$-TCS', fontsize = 15)
+    axes_mt[-1].set_xlabel('|$\mu_T$-A3E|', fontsize = 15)
     # fig_mt.suptitle(f'Quantile Distributions (Density Plot) of $\mu_T$-PAS \n (Subsampled)', y=1.02, fontsize = 15)
-    fig_mt.suptitle(f'Quantile Distributions (Density Plot) of $\mu_T$-TCS', y=1.02, fontsize = 15)
+    fig_mt.suptitle(f'Quantile Distributions (Density Plot) of |$\mu_T$-A3E|', y=1.02, fontsize = 15)
 
     # Add a legend to the last subplot or a shared legend if desired
     axes_mt[0].legend(fontsize=12, title_fontsize=13, bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -125,7 +125,7 @@ def disassociation_ridgeplots_per_gene(merged_df,
     
     '''
     * Takes: 
-    - merged_df: dataframe containing mT-TCS information on two samples
+    - merged_df: dataframe containing mT-A3E information on two samples
     - Genes for plotting
     - Celltypes surveying
     - file_suffix --> Not currently being used
@@ -188,14 +188,14 @@ def disassociation_ridgeplots_per_gene(merged_df,
 
             tick_positions = [-5000, 0, 5000, 10000, 15000]
             ax.set_xticks(tick_positions)
-            ax.set_xticklabels(['-5000', 'TCS', '5000', '10000', '15000'], fontsize=30)
+            ax.set_xticklabels(['-5000', 'A3E', '5000', '10000', '15000'], fontsize=30)
 
             ax.set_xlim([xmin, xmax])
             ax.set_yticks([])
             ax.set_ylabel(f'{celltype}\n{gene}', rotation=0, labelpad=50)
 
             if index == len(celltypes) * len(genes_to_include) + (len(genes_to_include) - 2):
-                ax.set_xlabel('Genomic Coordinates Relative to the TCS (bases)', labelpad=10, fontsize=30)
+                ax.set_xlabel('Genomic Coordinates Relative to the A3E (bases)', labelpad=10, fontsize=30)
             else:
                 ax.set_xticks([])
 
