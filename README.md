@@ -6,7 +6,7 @@ This repository contains data processing scripts from Barone et al. (2025). New 
 |-------------|-------------------|
 | Arsenic PRO-seq control experiments | GSM9321236, GSM9321237 |
 | Arsenic PRO-seq perturbed experiments | GSM9321238, GSM9321239 |
-| Human PRO-seq experiments | GSM6716757, GSM6716758 |
+| Human PRO-seq experiments | GSM6716757, GSM6716758, GSM6716769, GSM6716770 |
 | Gibbon monkey PRO-seq experiments | GSM6716755, GSM6716756 |
 | Rhesus monkey PRO-seq experiments | GSM6716759, GSM6716760 |
 | Squirrel monkey PRO-seq experiments | GSM6716761, GSM6716762 |
