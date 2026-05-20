@@ -43,6 +43,8 @@ Data analysis and visualization code.
 
 **Files:**
 - **`Figure-Analysis.ipynb`**: Jupyter Notebook containing all figure generation code and analyses
+- **python_packages.txt**: Required Python packages and versions
+- **r_packages.txt**: Required R packages and versions
 
 ---
 
