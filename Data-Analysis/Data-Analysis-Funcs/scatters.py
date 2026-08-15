@@ -605,7 +605,6 @@ def replicate_comparison_scatter_mT(plotting_dict_exp,
     merged_df["residual"] = merged_df[f"mT_adj_{sample1}"] - merged_df[f"mT_adj_{sample2}"]
     std_dev = np.std(merged_df["residual"])
     two_std = 2 * std_dev
-    three_std = 3 * std_dev
     print(f"±2 standard deviations from the 1:1 line: {two_std:.2f}")
 
     # linear regression
@@ -618,9 +617,9 @@ def replicate_comparison_scatter_mT(plotting_dict_exp,
     # shaded ±2SD region around 1:1 line
     x_vals = np.linspace(merged_df[f"mT_adj_{sample2}"].min(), merged_df[f"mT_adj_{sample1}"].max(), 500)
     plt.fill_between(x_vals, x_vals - two_std, x_vals + two_std, color="lightgrey", alpha=0.4, label=f"±2$\sigma_T$ region")
-    
-    merged_df["Outside_Band"] = merged_df["residual"].abs() > three_std
-    
+
+    merged_df["Outside_Band"] = merged_df["residual"].abs() > two_std
+
     # filter for genes in the "GC-Rich Subset" (2nd Cluster) and outside the 2SD band
     genes_outside_band = merged_df[(merged_df["Outside_Band"] == True)]["Gene"].tolist()
 
