@@ -61,8 +61,7 @@ def perturbation_comparison_scatter_mT_cluster_hypergeom_below_2sigma(two_std,
     merged_df["residual"] = merged_df[f"mT_adj_{sample2}"] - merged_df[f"mT_adj_{sample1}"]
     
     # genes below 2sigma (residual < -delta)
-    # ** labeling is confusing here **
-    merged_df["Above_2sigma"] = merged_df["residual"] < -delta
+    merged_df["Below_2sigma"] = merged_df["residual"] < -delta
     
     # get gene sets
     gc_rich_genes_full = merged_df[merged_df["Cluster"] == "2nd Cluster"]
@@ -70,15 +69,15 @@ def perturbation_comparison_scatter_mT_cluster_hypergeom_below_2sigma(two_std,
     
     # stats
     total_genes = len(merged_df)
-    total_above_2sigma = len(merged_df[merged_df["Above_2sigma"] == True])
+    total_above_2sigma = len(merged_df[merged_df["Below_2sigma"] == True])
     
     # GC-rich subset analysis
     total_gc_rich = len(gc_rich_genes_full)
-    gc_rich_above = len(gc_rich_genes_full[gc_rich_genes_full["Above_2sigma"] == True])
+    gc_rich_above = len(gc_rich_genes_full[gc_rich_genes_full["Below_2sigma"] == True])
     
     # T-rich subset analysis
     total_t_rich = len(t_rich_genes_full)
-    t_rich_above = len(t_rich_genes_full[t_rich_genes_full["Above_2sigma"] == True])
+    t_rich_above = len(t_rich_genes_full[t_rich_genes_full["Below_2sigma"] == True])
     
     # hypergeometric tests  --> survival function
     if gc_rich_above > 0:
@@ -305,23 +304,22 @@ def perturbation_comparison_scatter_mT_cluster_hypergeom_outside_2sigma(two_std,
     merged_df["residual"] = merged_df[f"mT_adj_{sample2}"] - merged_df[f"mT_adj_{sample1}"]
     
     # look for genes above OR below 2 sigma (|residual| > +delta)
-    # ** again, labeling is confusing here **
-    merged_df["Above_2sigma"] = merged_df["residual"].abs() > delta
+    merged_df["Outside_2sigma"] = merged_df["residual"].abs() > delta
     
     gc_rich_genes_full = merged_df[merged_df["Cluster"] == "2nd Cluster"]
     t_rich_genes_full = merged_df[merged_df["Cluster"] == "1st Cluster"]
     
     # Calculate stats
     total_genes = len(merged_df)
-    total_above_2sigma = len(merged_df[merged_df["Above_2sigma"] == True])
+    total_above_2sigma = len(merged_df[merged_df["Outside_2sigma"] == True])
     
     # GC-rich subset 
     total_gc_rich = len(gc_rich_genes_full)
-    gc_rich_above = len(gc_rich_genes_full[gc_rich_genes_full["Above_2sigma"] == True])
+    gc_rich_above = len(gc_rich_genes_full[gc_rich_genes_full["Outside_2sigma"] == True])
     
     # T-rich subset 
     total_t_rich = len(t_rich_genes_full)
-    t_rich_above = len(t_rich_genes_full[t_rich_genes_full["Above_2sigma"] == True])
+    t_rich_above = len(t_rich_genes_full[t_rich_genes_full["Outside_2sigma"] == True])
     
     # hypergeometric tests  --> survival function
     if gc_rich_above > 0:

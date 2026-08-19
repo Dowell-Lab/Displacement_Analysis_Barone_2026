@@ -4,7 +4,7 @@ import numpy as np
 import os
 from load_data import pull_out_params_meta_samples
 
-# hg38
+# hg38- Human samples
 ## Generate filtered mT beds cross species for scatter cluster analysis
 def generate_and_filter_beds(metadata, 
                              window, 
@@ -102,9 +102,8 @@ def generate_and_filter_beds(metadata,
             os.makedirs(os.path.dirname(outpath), exist_ok=True)
             bed.to_csv(outpath, sep="\t", header=False, index=False)
 
-# cross species
+# Cross species
 ## Generate filtered mT beds cross species for scatter cluster analysis
-
 def generate_and_filter_beds_non_hg38(metadata, 
                                       window, 
                                       base_outdir, 

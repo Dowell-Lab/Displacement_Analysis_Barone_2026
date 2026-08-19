@@ -6,23 +6,17 @@ from scipy.signal import savgol_filter
 import math
 
 # Function for counting bases --> base comp analyses
-def count_bases(seqs, window): 
+def count_bases(seqs, seq_length=None):
     '''calculate per position base composition across multiple 
-    sequences of even length. 
+    sequences of equal length. 
     
     Parameters
     ----------
     seqs : list or array
-        sequences of even lengths
+        sequences, all of the same length
         
-    outdir : str
-        path for out directory
-    
-    sample_name : str
-        name of sample
-        
-    window : int
-        length of sequences 
+    seq_length : int, optional
+        number of positions to tabulate; defaults to len(seqs[0])
         
     Returns
     -------
@@ -31,10 +25,10 @@ def count_bases(seqs, window):
         sequences
         
     ADAPTED FROM RU'S CODE
-    
     '''
-    
-    sequence_length = int(2*int(window)+1)
+    if seq_length is None:
+        seq_length = len(seqs[0])
+    sequence_length = int(seq_length)   # <-- was: int(2*int(window)+1)
     
     ##initialize lists with len of sequences
     a = [0]*sequence_length
@@ -43,10 +37,7 @@ def count_bases(seqs, window):
     g = [0]*sequence_length
     n = [0]*sequence_length
 
-    ##for each positions count the occurance of each base
-    ##across all sequences in the the input list
     for i in range(sequence_length):
-        ##initialize counters
         count_a = 0
         count_t = 0
         count_c = 0
@@ -69,26 +60,102 @@ def count_bases(seqs, window):
                 count_n = count_n + 1   
                 n[i] = count_n 
                 
-    ##evenly distribute Ns across all bases
     nnew = [x / 4 for x in n]
-
     anew = [ai + bi for ai,bi in zip(a,nnew)]
     tnew = [ai + bi for ai,bi in zip(t,nnew)]
     gnew = [ai + bi for ai,bi in zip(g,nnew)]
     cnew = [ai + bi for ai,bi in zip(c,nnew)]
 
-    ##get the base frequencies of all bases
     anew = [x / len(seqs) for x in anew]
     tnew = [x / len(seqs) for x in tnew]
     cnew = [x / len(seqs) for x in cnew]
     gnew = [x / len(seqs) for x in gnew]
     
-    base_df = pd.DataFrame({'A': anew,
-                            'T': tnew,
-                            'G': cnew,
-                            'C': gnew})
-    
     return anew, tnew, cnew, gnew, nnew
+
+# def count_bases(seqs, window): 
+#     '''calculate per position base composition across multiple 
+#     sequences of even length. 
+    
+#     Parameters
+#     ----------
+#     seqs : list or array
+#         sequences of even lengths
+        
+#     outdir : str
+#         path for out directory
+    
+#     sample_name : str
+#         name of sample
+        
+#     window : int
+#         length of sequences 
+        
+#     Returns
+#     -------
+#     anew,tnew,cnew,gnew,nnew : list of lists
+#         normalized base counts for every position across all
+#         sequences
+        
+#     ADAPTED FROM RU'S CODE
+    
+#     '''
+    
+#     sequence_length = int(2*int(window)+1)
+    
+#     ##initialize lists with len of sequences
+#     a = [0]*sequence_length
+#     t = [0]*sequence_length
+#     c = [0]*sequence_length
+#     g = [0]*sequence_length
+#     n = [0]*sequence_length
+
+#     ##for each positions count the occurance of each base
+#     ##across all sequences in the the input list
+#     for i in range(sequence_length):
+#         ##initialize counters
+#         count_a = 0
+#         count_t = 0
+#         count_c = 0
+#         count_g = 0
+#         count_n = 0
+#         for j in seqs:
+#             if j[i] == "a" or j[i] == "A":
+#                 count_a = count_a + 1
+#                 a[i] = count_a 
+#             elif j[i] == "t" or j[i] == "T":
+#                 count_t = count_t + 1
+#                 t[i] = count_t
+#             elif j[i] == "g" or j[i] == "G":
+#                 count_g = count_g + 1 
+#                 g[i] = count_g
+#             elif j[i] == "c" or j[i] == "C":
+#                 count_c = count_c + 1   
+#                 c[i] = count_c
+#             elif j[i] == "n" or j[i] == "N":
+#                 count_n = count_n + 1   
+#                 n[i] = count_n 
+                
+#     ##evenly distribute Ns across all bases
+#     nnew = [x / 4 for x in n]
+
+#     anew = [ai + bi for ai,bi in zip(a,nnew)]
+#     tnew = [ai + bi for ai,bi in zip(t,nnew)]
+#     gnew = [ai + bi for ai,bi in zip(g,nnew)]
+#     cnew = [ai + bi for ai,bi in zip(c,nnew)]
+
+#     ##get the base frequencies of all bases
+#     anew = [x / len(seqs) for x in anew]
+#     tnew = [x / len(seqs) for x in tnew]
+#     cnew = [x / len(seqs) for x in cnew]
+#     gnew = [x / len(seqs) for x in gnew]
+    
+#     base_df = pd.DataFrame({'A': anew,
+#                             'T': tnew,
+#                             'G': cnew,
+#                             'C': gnew})
+    
+#     return anew, tnew, cnew, gnew, nnew
 
 # Plots base composition in a dynamic grid (adjustable to how many fastas given) at A3E
 def count_and_plot_base_composition_dynamic_grid_A3E(fadir_dict, 
@@ -138,15 +205,14 @@ def count_and_plot_base_composition_dynamic_grid_A3E(fadir_dict,
             print(f"No sequences found in {fasta_path}")
             continue
 
-        window = len(sequences[0])
-        half_window = (window // 2) - 1
-        positions = np.arange(-half_window, half_window + 1)
+#         window = len(sequences[0])
+#         half_window = (window // 2) - 1
+#         positions = np.arange(-half_window, half_window + 1)
         
-        try:
-            counts = count_bases(sequences, half_window)
-        except NameError:
-            print("count_bases function needs to be ran")
-            continue
+        window = len(sequences[0])
+        half_window = window // 2
+        positions = np.arange(window) - half_window
+        counts = count_bases(sequences)
 
         # Smooth data (Savitzky-Golay filter)
         a1 = savgol_filter(counts[0], 61, 3)
@@ -235,14 +301,9 @@ def count_and_plot_base_composition_dynamic_grid(fadir_dict,
             continue
 
         window = len(sequences[0])
-        half_window = (window // 2) - 1
-        positions = np.arange(-half_window, half_window + 1)
-        
-        try:
-            counts = count_bases(sequences, half_window)
-        except NameError:
-            print("count_bases function needs to be ran")
-            continue
+        half_window = window // 2
+        positions = np.arange(window) - half_window
+        counts = count_bases(sequences)
 
         # Smooth data (Savitzky-Golay filter)
         a1 = savgol_filter(counts[0], 61, 3)
@@ -296,7 +357,7 @@ def count_and_plot_base_composition_2x1_grid(fadir_dict,
     """
 
     if len(fadir_dict) != 2:
-        raise ValueError("2 fasta files for a 1x2 grid")
+        raise ValueError("2 fasta files for a 2x1 grid")
     
 #     fig, axs = plt.subplots(2, 1, figsize=(5.5, 8), sharex=True, sharey=True)
     fig, axs = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=False)
@@ -315,11 +376,9 @@ def count_and_plot_base_composition_2x1_grid(fadir_dict,
             continue
 
         window = len(sequences[0])
-        half_window = (window // 2) - 1
-        positions = np.arange(-half_window, half_window + 1)
-
-        # count bases
-        counts = count_bases(sequences, half_window)
+        half_window = window // 2
+        positions = np.arange(window) - half_window
+        counts = count_bases(sequences)
 
         # smooth
         a1 = savgol_filter(counts[0], 61, 3)
@@ -405,11 +464,9 @@ def count_and_plot_base_composition_9x1_grid(fadir_dict,
             continue
 
         window = len(sequences[0])
-        half_window = (window // 2) - 1
-        positions = np.arange(-half_window, half_window + 1)
-
-        # count bases
-        counts = count_bases(sequences, half_window)
+        half_window = window // 2
+        positions = np.arange(window) - half_window
+        counts = count_bases(sequences)
 
         # smooth
         a1 = savgol_filter(counts[0], 61, 3)

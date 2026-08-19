@@ -140,7 +140,7 @@ def disassociation_ridgeplots_per_gene(merged_df,
     xmin = -5000
     xmax = 25000  
     
-    fig = plt.figure(figsize=(12, 10))  
+    fig = plt.figure(figsize=(10, 8))  
     gs = gridspec.GridSpec(len(celltypes) * len(genes_to_include) + (len(genes_to_include) - 1), 1, hspace=-0.5)
     ax_objs = []
     index = 0
@@ -195,7 +195,7 @@ def disassociation_ridgeplots_per_gene(merged_df,
             ax.set_ylabel(f'{celltype}\n{gene}', rotation=0, labelpad=50)
 
             if index == len(celltypes) * len(genes_to_include) + (len(genes_to_include) - 2):
-                ax.set_xlabel('Genomic Coordinates Relative to the A3E (bases)', labelpad=10, fontsize=30)
+                ax.set_xlabel('Genomic Coordinates \n Relative to the A3E (bases)', labelpad=10, fontsize=30)
             else:
                 ax.set_xticks([])
 
