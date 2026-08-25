@@ -16,8 +16,6 @@ This repository contains data processing scripts from Barone et al. (2026). New 
 ```
 Displacement_Analysis_Barone_2026/
 ├── README.md
-├── GC_clust_MANE-Consensus.sorted.bed
-├── T_clust_MANE-Consensus.sorted.bed
 │
 ├── 3p_Bedgraph_Generation/
 │   ├── main.nf
@@ -25,27 +23,53 @@ Displacement_Analysis_Barone_2026/
 │   └── bedgraph_gen_samples_BATCH0.csv
 │
 ├── Consensus_GC_Trich_Genes/
+│   ├── GC_clust_MANE-Consensus.sorted.bed
+│   └── T_clust_MANE-Consensus.sorted.bed
 │
 ├── Cross-Species-liftOver/
+│   ├── all_species.sbatch
 │   ├── busco.sbatch
 │   ├── Hal-liftover.sbatch
 │   ├── LIET-Input-File-Generation-Cross-Species.ipynb
-│   └── all_species.sbatch
+│   └── packages.txt
 │
 ├── Data-Analysis/
 │   ├── Figure-Analysis.ipynb
 │   ├── python_packages.txt
-│   └── r_packages.txt
+│   ├── r_packages.txt
+│   └── Data-Analysis-Funcs/
+│       ├── base_composition_quantile.py
+│       ├── beds_centered_mT.py
+│       ├── hypergeometric.py
+│       ├── intron_genebody_length.py
+│       ├── load_data.py
+│       ├── mT_table.py
+│       ├── multiple_sequence_alignment.py
+│       ├── nearest_downstream.py
+│       ├── plot_liet_fits.py
+│       ├── polyA_selection.py
+│       ├── prior_dists.py
+│       ├── qcut.py
+│       ├── ridgeplots.py
+│       ├── ridgeplots_nearest_gene.py
+│       ├── scatters.py
+│       ├── subsampled_violins_deltamT_perturbation.py
+│       └── violins.py
 │
 ├── Gene-Curation/
-│   ├── LIET-Input-File-Generation-Human.ipynb
+│   ├── README.md
 │   ├── annotation-isolation-filter.sbatch
 │   ├── create_bedfiles.py
 │   ├── gene-filtering.py
+│   ├── LIET-Input-File-Generation-Human.ipynb
+│   ├── packages.txt
 │   ├── pipeline.sbatch
-│   └── tfit-config/          # includes tfit_model.sh, requirement for running TFit
+│   ├── tfit_model.sh
+│   └── tfit-config/
+│       └── tfit_config_file_K1.txt
 │
 └── Metadata/
+    └── metadata.tsv
 ```
 ### `3p_Bedgraph_Generation/`
 
@@ -57,7 +81,11 @@ Nextflow pipeline for generating bedgraphs with the 3'-most position of reads.
 - **`bedgraph_gen_samples_BATCH0.csv`**: Example input CSV file
 
 ---
+### `Consensus_GC_Trich_Genes/`
+- **`GC_clust_MANE-Consensus.sorted.bed`**: List of GC-rich genes (called in at least 1 human sample)
+- **`T_clust_MANE-Consensus.sorted.bed`**: List of T-rich genes (called in at least 1 human sample)
 
+---
 ### `Cross-Species-liftOver/`
 
 Scripts for cross-species analyses.
@@ -78,6 +106,7 @@ Data analysis and visualization code.
 - **`Figure-Analysis.ipynb`**: Jupyter Notebook containing all figure generation code and analyses
 - **`python_packages.txt`**: Required Python packages and versions
 - **`r_packages.txt`**: Required R packages and versions
+- **`Data-Analysis-Funcs/`**: Functions for data analysis, used in `Figure-Analysis.ipynb`
 
 ---
 
@@ -94,6 +123,13 @@ Scripts for gene filtering and curation workflow.
 - **`tfit_model.sh`** & **`tfit-config/`**: Scripts for running Tfit on constrained regions ($\mu_T$ regions)
 
 > **Note:** Gene filtering in the cross-species analyses follows the same procedure as the human analysis, but omits the annotation isolation step. Additionally, each subdirectory contains a `packages.txt` file with required software versions and dependencies.
+
+---
+
+### `Metadata/`
+
+**Files:**
+- **`metadata.tsv`**: Information about samples in the manuscript. 
 
 References:
 1. Manni, M., Berkeley, M.R., Seppey, M., Simao, F.A., Zdobnov, E.M.: Busco update: Novel and streamlined workflows along with broader and deeper phylogenetic coverage for scoring of eukaryotic, prokaryotic, and viral genomes. Molecular Biology and Evolution 38(10), 4647–4654 (2021) https://doi.org/10.1093/molbev/msab199
