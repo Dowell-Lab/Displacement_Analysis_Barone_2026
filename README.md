@@ -13,7 +13,7 @@ This repository contains data processing scripts from Barone et al. (2026). New 
 | ATAC-seq experiment | GSM5269423 |
 
 ## Directory Contents
-
+```
 Displacement_Analysis_Barone_2026/
 ├── README.md
 ├── GC_clust_MANE-Consensus.sorted.bed
@@ -46,7 +46,7 @@ Displacement_Analysis_Barone_2026/
 │   └── tfit-config/          # includes tfit_model.sh, requirement for running TFit
 │
 └── Metadata/
-
+```
 ### `3p_Bedgraph_Generation/`
 
 Nextflow pipeline for generating bedgraphs with the 3'-most position of reads.
