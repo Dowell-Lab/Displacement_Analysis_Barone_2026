@@ -14,6 +14,40 @@ This repository contains data processing scripts from Barone et al. (2026). New 
 
 ## Directory Contents
 
+``
+Displacement_Analysis_Barone_2026/
+├── README.md
+├── GC_clust_MANE-Consensus.sorted.bed
+├── T_clust_MANE-Consensus.sorted.bed
+│
+├── 3p_Bedgraph_Generation/
+│   ├── main.nf
+│   ├── bedgraph_generator_nf.sbatch
+│   └── bedgraph_gen_samples_BATCH0.csv
+│
+├── Consensus_GC_Trich_Genes/
+│
+├── Cross-Species-liftOver/
+│   ├── busco.sbatch
+│   ├── Hal-liftover.sbatch
+│   ├── LIET-Input-File-Generation-Cross-Species.ipynb
+│   └── all_species.sbatch
+│
+├── Data-Analysis/
+│   ├── Figure-Analysis.ipynb
+│   ├── python_packages.txt
+│   └── r_packages.txt
+│
+├── Gene-Curation/
+│   ├── LIET-Input-File-Generation-Human.ipynb
+│   ├── annotation-isolation-filter.sbatch
+│   ├── create_bedfiles.py
+│   ├── gene-filtering.py
+│   ├── pipeline.sbatch
+│   └── tfit-config/          # includes tfit_model.sh, requirement for running TFit
+│
+└── Metadata/
+``
 ### `3p_Bedgraph_Generation/`
 
 Nextflow pipeline for generating bedgraphs with the 3'-most position of reads.
