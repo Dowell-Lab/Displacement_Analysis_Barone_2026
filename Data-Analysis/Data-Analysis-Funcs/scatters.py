@@ -972,6 +972,299 @@ def perturbation_comparison_scatter_mT_all_genes_outside_2sigma(two_std,
         label1, label2, color_perturbed, Gene_to_Lab, color_lab, title, out, xlimylim, direction="outside"
     )
     
+    
+
+##################################################################################################################
+########################## Scatter grids GC/T distance from identity line in each pairwise comparison ############
+##################################################################################################################
+def mT_scatter_on_GC_T_species_grid(plotting_dict_exp,
+                                     experiment_name1,
+                                     experiment_name2,
+                                     sample1,
+                                     sample2,
+                                     genes_to_remove,
+                                     label1,
+                                     label2,
+                                     xlimylim,
+                                     stable_GC,
+                                     stable_T,
+                                     GC_to_T,
+                                     T_to_GC,
+                                    species,
+                                    outdir,
+                                    bound=2000):
+    """
+    Generates a 2×2 grid of scatter plots, one per evolutionary group,
+    with all other genes shown as grey background points.
+    Annotates each panel with gene counts inside/outside the 2σ bound.
+    
+    * Takes: 
+    - Plotting dict
+    - Experiment names (species here)
+    - Samples
+    - Genes for removal (testing purposes only)
+    - Labels
+    - X and Y lims
+    - GC and T rich genes that do not change between species for comparison
+    - Switches (GC --> T and vice versa)
+    
+    * Outputs: 
+    - Grid colored on GC vs T-rich subsets across species
+    
+    """
+
+    # ── 1. Prepare & Merge ──────────────────────────────────────────────────
+    col1 = f"mT_adj_{sample1}"
+    col2 = f"mT_adj_{sample2}"
+
+    df1 = (plotting_dict_exp[experiment_name1][sample1][["Gene", "mT-adj"]]
+           .rename(columns={"mT-adj": col1}))
+    df2 = (plotting_dict_exp[experiment_name2][sample2][["Gene", "mT-adj"]]
+           .rename(columns={"mT-adj": col2}))
+
+    merged_df = pd.merge(df1, df2, on="Gene")
+    merged_df = merged_df[~merged_df["Gene"].isin(genes_to_remove)].copy()
+
+    # ── 2. Assign Evolutionary Group ────────────────────────────────────────
+    def assign_group(gene):
+        if gene in stable_GC:  return "GC in both species"
+        elif gene in stable_T: return "T in both species"
+        elif gene in GC_to_T:  return f"GC(human)→T({species})"
+        elif gene in T_to_GC:  return f"T(human)→GC({species})"
+        else:                   return "Other"
+
+    merged_df["cluster_group"] = merged_df["Gene"].apply(assign_group)
+
+    # ── 3. 2σ Status ────────────────────────────────────────────────────────
+    merged_df["residual"] = merged_df[col1] - merged_df[col2]
+    merged_df["Status"]   = np.where(
+        merged_df["residual"].abs() > bound, "Outside 2σ", "Within 2σ"
+    )
+
+    # ── 4. Palette & Plot Order ──────────────────────────────────────────────
+    palette = {
+        "GC in both species":   "#CF5D5D",
+        "T in both species":    "#9E9E9E",
+        f"GC(human)→T({species})": "#F4A261",
+        f"T(human)→GC({species})": "#2A9D8F",
+    }
+    plot_order = [
+        "GC in both species",
+        "T in both species",
+        f"GC(human)→T({species})",
+        f"T(human)→GC({species})",
+    ]
+
+    # ── 5. 2×2 Grid ─────────────────────────────────────────────────────────
+    fig = plt.figure(figsize=(8, 6))
+    gs  = gridspec.GridSpec(2, 2, hspace=0.4, wspace=0.4)
+    limit   = xlimylim[1]
+    x_range = np.linspace(xlimylim[0], limit, 200)
+
+    for idx, group in enumerate(plot_order):
+        ax     = fig.add_subplot(gs[idx // 2, idx % 2])
+        subset = merged_df[merged_df["cluster_group"] == group]
+
+        # ── 1:1 line & shaded band ──
+        ax.plot([xlimylim[0], limit], [xlimylim[0], limit],
+                linestyle="--", color="black", alpha=0.4, zorder=1)
+        ax.fill_between(x_range, x_range - bound, x_range + bound,
+                        color="gray", alpha=0.15, zorder=0)
+
+        # ── Background: all other genes ──
+        bg = merged_df[merged_df["cluster_group"] != group]
+        ax.scatter(bg[col2], bg[col1],
+                   color="#CCCCCC", alpha=0.2, s=20,
+                   edgecolors="none", zorder=1)
+
+        # ── Focal group ──
+        ax.scatter(subset[col2], subset[col1],
+                   color=palette[group], alpha=0.75, s=40,
+                   edgecolors="white", linewidth=0.4, zorder=3)
+
+        ax.set_xlim(xlimylim)
+        ax.set_ylim(xlimylim)
+        ax.set_xlabel(f"{label2} |$\mu_T$-A3E|", fontsize=10)
+        ax.set_ylabel(f"{label1} |$\mu_T$-A3E|", fontsize=10)
+        ax.set_title(f"{group}  (n={len(subset)})",
+                     fontsize=10, color=palette[group], fontweight="bold")
+
+        # ── Count annotation ──
+        n_outside = (subset["Status"] == "Outside 2σ").sum()
+        n_within  = (subset["Status"] == "Within 2σ").sum()
+        annot = (
+            f"Outside 2σ: {n_outside}\n"
+            f"Within 2σ:  {n_within}"
+        )
+        ax.text(0.04, 0.97, annot,
+                transform=ax.transAxes,
+                fontsize=8.5, va="top", ha="left",
+                family="monospace",
+                bbox=dict(boxstyle="round,pad=0.4", fc="white",
+                          ec=palette[group], alpha=0.85, linewidth=1.2))
+
+    fig.suptitle(f"|$\mu_T$-A3E| {label1} vs {label2}  (2σ bound = {bound:,})",
+                 fontsize=13, fontweight="bold", y=1.01)
+
+    plt.savefig(
+        f"{outdir}/mT_scatter_grid_{species}.svg",
+        bbox_inches="tight"
+    )
+    plt.show()
+    return merged_df
+
+#####################################################################
+########################## Scatter colored on GC content ############
+#####################################################################
+
+def scatter_mT_gc_colored(gc_df,
+                           plotting_dict_exp,
+                           experiment_name,
+                           sample1,
+                           sample2,
+                           genes_to_remove,
+                           outpath,
+                           label1,
+                           label2,
+                           title,
+                           xlimylim,
+                           two_std=None,
+                           n_bins=4,
+                           cmap="magma"):
+    '''
+    * Takes: 
+    - Dataframe with GC content
+    - Plotting dictionary
+    - Experiment
+    - Samples
+    - Genes for removal
+    - Outpath
+    - Labels
+    - Title
+    - X and Y limits
+    
+    * Output: 
+    - Scatter colored on GC content
+    
+    '''
+    # --- 1. Pull mT values ---
+    df1 = (plotting_dict_exp[experiment_name][sample1][["Gene", "mT-adj"]]
+           .rename(columns={"mT-adj": f"mT_adj_{sample1}"}))
+    df2 = (plotting_dict_exp[experiment_name][sample2][["Gene", "mT-adj"]]
+           .rename(columns={"mT-adj": f"mT_adj_{sample2}"}))
+
+    merged_df = pd.merge(df1, df2, on="Gene")
+    merged_df = merged_df[~merged_df["Gene"].isin(genes_to_remove)]
+
+    # --- 2. Merge GC% ---
+    gc_subset = gc_df[["Gene", "GC%"]].drop_duplicates()
+    merged_df = pd.merge(merged_df, gc_subset, on="Gene", how="inner")
+    print(f"Genes with both mT and GC% data: {len(merged_df)}")
+
+    # --- 3. Bin GC% into discrete, equal-width bins ---
+    gc_min, gc_max = merged_df["GC%"].min(), merged_df["GC%"].max()
+    bin_edges = np.linspace(gc_min, gc_max, n_bins + 1)
+
+    merged_df["GC%_bin"] = pd.cut(
+        merged_df["GC%"],
+        bins=bin_edges,
+        labels=False,           # 0-indexed integers
+        include_lowest=True
+    ).astype(int)
+
+    # Each bin gets a fixed color drawn evenly from magma
+    # Avoid the very dark ends (0.05–0.90) for better contrast on white bg
+    cmap_obj = plt.get_cmap(cmap)
+    palette = [cmap_obj(v) for v in np.linspace(0.10, 0.90, n_bins)]
+
+    # Build tick labels: "X% – Y%" for each bin
+    bin_labels = [f"{bin_edges[i]:.1f}% – {bin_edges[i+1]:.1f}%" 
+                  for i in range(n_bins)]
+
+    # --- 4. Sort so the darkest points don't bury the lightest ---
+    # Plot low-GC (dark magma) first, high-GC (light magma) on top
+    merged_df = merged_df.sort_values("GC%_bin", ascending=True)
+
+    # --- 5. Plot ---
+    fig, ax = plt.subplots(figsize=(5, 4))
+
+    # Optional 2σ band
+    if two_std is not None:
+        x_vals = np.linspace(xlimylim[0], xlimylim[1], 500)
+        ax.fill_between(x_vals, x_vals - two_std, x_vals + two_std,
+                        color="lightgrey", alpha=0.45, zorder=0, label=f"±2σ")
+        ax.plot(x_vals, x_vals, linestyle="--", color="red",
+                linewidth=1, zorder=1, label="1:1 line")
+
+    # Plot each bin as its own scatter layer so legend is clean
+    for bin_idx in range(n_bins):
+        subset = merged_df[merged_df["GC%_bin"] == bin_idx]
+        ax.scatter(
+            subset[f"mT_adj_{sample1}"],
+            subset[f"mT_adj_{sample2}"],
+            color=palette[bin_idx],
+            label=bin_labels[bin_idx],
+            alpha=0.75,
+            s=55,
+            edgecolor="black",
+            linewidth=0.3,
+            zorder=2
+        )
+
+    # --- 6. Legend for bins ---
+    handles, labels_leg = ax.get_legend_handles_labels()
+    # Separate 2σ / 1:1 handles from bin handles
+    band_handles = [h for h, l in zip(handles, labels_leg) if l in ["±2σ", "1:1 line"]]
+    band_labels  = [l for l in labels_leg if l in ["±2σ", "1:1 line"]]
+    bin_handles  = [h for h, l in zip(handles, labels_leg) if l not in ["±2σ", "1:1 line"]]
+    bin_labels_  = [l for l in labels_leg if l not in ["±2σ", "1:1 line"]]
+    
+    if band_handles:
+        ax.legend(band_handles, band_labels, fontsize=10, loc="lower right")
+
+    # GC% bins in a separate legend box
+    legend_bins = ax.legend(bin_handles, bin_labels_,
+                            title="GC% ±1kb of $\mu_T$",
+                            title_fontsize=11,
+                            fontsize=10,
+                            loc="upper left")
+    
+    ax.add_artist(legend_bins)
+    
+    # --- 7. Axes formatting ---
+    ax.set_xlabel(f"{label1} |$\mu_T$-A3E|", fontsize=15)
+    ax.set_ylabel(f"{label2} |$\mu_T$-A3E|", fontsize=15)
+    ax.set_title(title, fontsize=16)
+
+    # Set limits FIRST so get_xticks reflects the correct range
+    ax.set_xlim(xlimylim)
+    ax.set_ylim(xlimylim)
+
+    # Generate evenly spaced ticks within the range
+    tick_min, tick_max = xlimylim
+    step = 5000  # adjust if needed
+    ticks = [t for t in range(
+                int(np.ceil(tick_min / step)) * step,
+                int(np.floor(tick_max / step)) * step + step,
+                step)
+             if tick_min <= t <= tick_max]
+
+    ax.set_xticks(ticks)
+    ax.set_yticks(ticks)
+    ax.set_xticklabels(
+        ["A3E" if t == 0 else f"{int(t):,}" for t in ticks],
+        fontsize=13, rotation=20)
+    ax.set_yticklabels(
+        ["A3E" if t == 0 else f"{int(t):,}" for t in ticks],
+        fontsize=13)
+
+    # Re-enforce after tick setting
+    ax.set_xlim(xlimylim)
+    ax.set_ylim(xlimylim)
+
+    plt.tight_layout()
+    plt.savefig(outpath, dpi=300, bbox_inches='tight')
+    plt.show()
 
  
  

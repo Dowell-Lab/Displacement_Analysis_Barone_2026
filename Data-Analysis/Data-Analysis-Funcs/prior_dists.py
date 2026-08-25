@@ -5,7 +5,116 @@ import seaborn as sns
 from scipy.stats import mannwhitneyu
 from statsmodels.stats.multitest import multipletests
 
+####### Plotting all genes assessed #######
+def plot_violin_with_points(
+    df,
+    param_dict,
+    ylim,
+    param,
+    color_dict,
+    ax=None,
+    title=None,
+    ylabel=None,
+    point_alpha=0.7,
+    point_size=3,
+    jitter_strength=0.05,
+    violin_alpha=0.7,
+    showmedians=True,
+    log_scale=False,
+):
+    """
+    Violin plot comparing cell types for a given parameter, with jittered points overlaid.
+    ** Note, requires ANOVA code to be ran first, relies on the data structure 
+    
+    * Takes: 
+    -  df : pd.DataFrame from anova_data_formatter; must have 'treatment' column
+    - param : str  — column name to plot (e.g. 'mT', 'wL', 'sL')
+    - color_dict : dict — {treatment_name: color}  e.g. {'HCT116': '#e41a1c', 'K562': '#377eb8'}
+    - ax : matplotlib Axes (created if None)
+    - title : str  — plot title (defaults to param name)
+    - ylabel : str  — y-axis label (defaults to param name)
+    - point_alpha : float — transparency of individual points
+    - point_size : float — size of individual points
+    - jitter_strength: float — horizontal jitter magnitude for points
+    - violin_alpha : float — transparency of violin body
+    - showmedians : bool  — draw median line inside violin
+    - log_scale : bool  — use log y-axis (useful for scale params)
 
+    * Outputs:
+    - violin plot plotting distirbutions of priors
+    """
+    treatments = list(color_dict.keys())
+    # Only keep treatments that exist in the dataframe
+    treatments = [t for t in treatments if t in df['treatment'].unique()]
+
+    groups = [df.loc[df['treatment'] == t, param].dropna().values for t in treatments]
+    colors = [color_dict[t] for t in treatments]
+    positions = np.arange(1, len(treatments) + 1)
+
+    if ax is None:
+#         fig, ax = plt.subplots(figsize=(max(5, len(treatments) * 1.4), 5))
+        fig, ax = plt.subplots(figsize=(4, 4.2))
+
+
+    # ── Violin bodies ──────────────────────────────────────────────────────────
+    vp = ax.violinplot(
+        groups,
+        positions=positions,
+        showmeans=False,
+        showmedians=showmedians,
+        showextrema=True,
+        widths=0.6,
+    )
+
+    # Recolor each violin
+    for i, (body, color) in enumerate(zip(vp['bodies'], colors)):
+        body.set_facecolor(color)
+        body.set_edgecolor('black')
+        body.set_linewidth(0.8)
+        body.set_alpha(violin_alpha)
+
+    for part in ('cbars', 'cmins', 'cmaxes'):
+        vp[part].set_edgecolor('black')
+        vp[part].set_linewidth(1)
+    if showmedians:
+        vp['cmedians'].set_edgecolor('white')
+        vp['cmedians'].set_linewidth(2)
+        vp['cmedians'].set_zorder(4)
+
+    # ── Jittered points ────────────────────────────────────────────────────────
+    rng = np.random.default_rng(42)
+    for pos, data, color in zip(positions, groups, colors):
+        jitter = rng.uniform(-jitter_strength, jitter_strength, size=len(data))
+        ax.scatter(
+            pos + jitter,
+            data,
+            color=color,
+            edgecolors='black',
+            linewidths=0.3,
+            s=point_size ** 2,
+            alpha=point_alpha,
+            zorder=3,
+        )
+
+    # ── Aesthetics ─────────────────────────────────────────────────────────────
+    ax.set_xticks(positions)
+    
+    param_lab = param_dict.get(param)
+    
+    ax.set_xticklabels(treatments, rotation=30, ha='right', fontsize=14)
+    ax.set_ylabel(ylabel or param_lab, fontsize=14)
+    ax.set_title(title or param_lab, fontsize=16)
+    ax.tick_params(axis='y', labelsize=16)
+    ax.set_xlim(0.3, len(treatments) + 0.7)
+    ax.set_ylim(ylim)
+    
+    ax.spines[['top', 'right']].set_visible(False)
+    if log_scale:
+        ax.set_yscale('log')
+
+    return ax
+
+####### Plotting subsets of genes assessed #######
 def _split_subsets(meta_df, T_clust_genes, GC_clust_genes, genes_to_remove):
     '''
     * Takes:
@@ -55,7 +164,7 @@ def _run_subsampled_mannwhit(gc_df, t_df, column_prefix, n_subsamples=10):
         t_vals = t_col.sample(
             n=min(n_gc, len(t_col)),
             random_state=seed,
-            replace=False
+            replace=True
         ).values
         _, p = mannwhitneyu(gc_vals, t_vals, alternative='two-sided')
         p_values.append(p)
@@ -249,10 +358,8 @@ def violins_combined_subsample_mannwhit(
     - savepath_base  : str, output path for the saved figure.
     - corrected_pvals : {species_label: corrected_p}, from
                          compute_corrected_pvalues()[column_prefix].
-    - n_subsamples : int, unused for stats here (p-values come from
-                        corrected_pvals) -- kept only to control how many
-                        rows the display sample effectively represents.
-
+    - n_subsamples : int, how many subsamps ran 
+    
     * Outputs:
     - Saves and displays the figure at savepath_base
     '''

@@ -194,8 +194,8 @@ def collect_intron_stats(samp, t_genes, gc_genes, intron_df, n_subsamples=10, se
     """
     intron_lookup = intron_df.set_index('gene_id')['avg_intron_length_bp']
 
-    t_vals = intron_lookup.reindex(list(t_genes)).dropna().values
-    gc_vals = intron_lookup.reindex(list(gc_genes)).dropna().values
+    t_vals = intron_lookup.reindex(sorted(t_genes)).dropna().values
+    gc_vals = intron_lookup.reindex(sorted(gc_genes)).dropna().values
 
     print(f"{samp}: T-rich genes with intron data = {len(t_vals)}, "
           f"GC-rich genes with intron data = {len(gc_vals)}")

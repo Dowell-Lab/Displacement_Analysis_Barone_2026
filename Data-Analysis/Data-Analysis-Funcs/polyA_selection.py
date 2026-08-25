@@ -27,7 +27,7 @@ def get_top_pas(polyAdb, sample_col, shared_genes, output_name):
     df = df.groupby('gene_name').first().reset_index()
     
     # name parse
-    df["PAS_adjusted_start"] = df["name"].str.split(":").str[1]
+    df["PAS_adjusted_start"] = df["name"].str.split(":").str[1].astype(int)
     df["PAS_adjusted_stop"] = df["PAS_adjusted_start"].astype(int) + 1   
     
     df['chrom'] = df['chrom'].astype(str).str.replace('^', 'chr', regex=True)

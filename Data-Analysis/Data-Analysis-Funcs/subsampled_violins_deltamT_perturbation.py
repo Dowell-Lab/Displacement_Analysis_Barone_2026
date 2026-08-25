@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import shapiro, mannwhitneyu
-from statsmodels.sandbox.stats.multicomp import multipletests
+from statsmodels.stats.multitest import multipletests
 
 # violins subsample - 2x2 grid version
 def compare_change_mT_clusters_violin_grid(plotting_dict_exp,

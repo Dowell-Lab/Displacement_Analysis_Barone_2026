@@ -206,28 +206,123 @@ def make_neighborhood_bed(liet_df, ann_df, genome_label, outdir, genes_with_same
     print(f"Written: {outpath} ({len(bed_df)} regions)")
     return bed_df
 
-def parse_and_stitch_maf(maf_path):
+# def parse_and_stitch_maf(maf_path):
+#     '''
+#     * Takes:
+#     - maf_path : str, path to a MAF (Multiple Alignment Format) file
+#                  containing one or more alignment blocks.
+
+#     * Outputs:
+#     - genome_seqs : dict[str, str], one entry per genome encountered
+#                     across all blocks (keyed by the genome prefix
+#                     before the first '.' in each record's id), value
+#                     is that genome's full stitched sequence across all
+#                     blocks concatenated in block order. Genomes absent
+#                     from a given block are gap-filled ('-' * block_len)
+#                     for that block so all genomes remain equal length.
+#     - all_genomes : list[str], genome names in first-encountered order
+#                     across blocks.
+                    
+#     '''
+#     blocks = list(AlignIO.parse(maf_path, "maf"))
+#     if not blocks:
+#         raise ValueError(f"No alignment blocks found in {maf_path}")
+
+#     all_genomes = []
+#     seen = set()
+#     for block in blocks:
+#         for rec in block:
+#             prefix = rec.id.split(".")[0]
+#             if prefix not in seen:
+#                 all_genomes.append(prefix)
+#                 seen.add(prefix)
+
+#     genome_seqs = {g: "" for g in all_genomes}
+#     for block in blocks:
+#         block_len = block.get_alignment_length()
+#         present = {rec.id.split(".")[0]: str(rec.seq) for rec in block}
+#         for genome in all_genomes:
+#             genome_seqs[genome] += present.get(genome, "-" * block_len)
+
+#     return genome_seqs, all_genomes
+
+def parse_and_stitch_maf(maf_path, chrom_threshold=0.95):
     '''
     * Takes:
-    - maf_path : str, path to a MAF (Multiple Alignment Format) file
-                 containing one or more alignment blocks.
+    - maf_path : str, path to a MAF file.
+    - chrom_threshold : float, for EVERY genome in the file, its
+                   majority chromosome (by block count, among blocks
+                   where that genome is present) must cover at least
+                   this fraction of those blocks. Default 0.95.
 
     * Outputs:
-    - genome_seqs : dict[str, str], one entry per genome encountered
-                    across all blocks (keyed by the genome prefix
-                    before the first '.' in each record's id), value
-                    is that genome's full stitched sequence across all
-                    blocks concatenated in block order. Genomes absent
-                    from a given block are gap-filled ('-' * block_len)
-                    for that block so all genomes remain equal length.
-    - all_genomes : list[str], genome names in first-encountered order
-                    across blocks.
-                    
+    - genome_seqs, all_genomes : same as before, but restricted to
+      blocks where every present genome sits on ITS OWN majority
+      chromosome. Blocks where any genome is off its majority chrom
+      are dropped entirely.
+    - Returns (None, None) if any genome fails to reach chrom_threshold
+      — signal for the caller to skip this gene.
     '''
     blocks = list(AlignIO.parse(maf_path, "maf"))
     if not blocks:
         raise ValueError(f"No alignment blocks found in {maf_path}")
 
+    # ── 1. Collect per-genome chromosome per block ──────────────────────
+    genome_chrom_counts = {}   # genome -> {chrom: count}
+    for block in blocks:
+        for rec in block:
+            genome = rec.id.split(".")[0]
+            chrom  = rec.id.split(".", 1)[1]
+            genome_chrom_counts.setdefault(genome, {})
+            genome_chrom_counts[genome][chrom] = (
+                genome_chrom_counts[genome].get(chrom, 0) + 1
+            )
+
+    # ── 2. Determine each genome's majority chrom; bail if any fails ────
+    majority_chrom = {}
+    for genome, counts in genome_chrom_counts.items():
+        total = sum(counts.values())
+        best_chrom, best_count = max(counts.items(), key=lambda kv: kv[1])
+        frac = best_count / total
+
+        if frac < chrom_threshold:
+            print(f"[parse_and_stitch_maf] {genome} has no chromosome "
+                  f"reaching {chrom_threshold:.0%} of its blocks in "
+                  f"{maf_path} (best: {best_chrom} at {frac:.1%}); "
+                  f"skipping gene.")
+            return None, None
+
+        majority_chrom[genome] = best_chrom
+
+    # ── 3. Keep only blocks where every present genome is on its own
+    #        majority chromosome ────────────────────────────────────────
+    kept_blocks = []
+    dropped = 0
+    for block in blocks:
+        ok = True
+        for rec in block:
+            genome = rec.id.split(".")[0]
+            chrom  = rec.id.split(".", 1)[1]
+            if chrom != majority_chrom[genome]:
+                ok = False
+                break
+        if ok:
+            kept_blocks.append(block)
+        else:
+            dropped += 1
+
+    if dropped:
+        chrom_summary = ", ".join(f"{g}={c}" for g, c in majority_chrom.items())
+        print(f"[parse_and_stitch_maf] Dropped {dropped} off-target "
+              f"block(s) in {maf_path} (majority chroms: {chrom_summary}).")
+    blocks = kept_blocks
+
+    if not blocks:
+        print(f"[parse_and_stitch_maf] No blocks remained after chromosome "
+              f"filtering for {maf_path}; skipping gene.")
+        return None, None
+
+    # ── 4. Stitch as before ─────────────────────────────────────────────
     all_genomes = []
     seen = set()
     for block in blocks:
@@ -275,7 +370,8 @@ def plot_msa_maf_mT(maf_path,
                     species_st_col_map,
                     label_dict,
                     tcs_offset=7000,
-                    species_order=None):
+                    species_order=None,
+                    chrom_threshold=0.95):
     '''
     * Takes:
     - maf_path : str, path to the MAF file for this gene's region.
@@ -304,9 +400,21 @@ def plot_msa_maf_mT(maf_path,
     '''
 
     # ── 1. Load and stitch MAF ────────────────────────────────────────────────
-    genome_seqs, detected_order = parse_and_stitch_maf(maf_path)
+    genome_seqs, detected_order = parse_and_stitch_maf(
+        maf_path, chrom_threshold=chrom_threshold
+    )
+    if genome_seqs is None:
+        print(f"Skipping {gene}: chromosome filtering failed "
+              f"(no genome reached {chrom_threshold:.0%} majority, or no "
+              f"blocks survived filtering).")
+        return
+
     order = species_order if species_order is not None else detected_order
     order = [sp for sp in order if sp in label_dict]
+    
+#     genome_seqs, detected_order = parse_and_stitch_maf(maf_path)
+#     order = species_order if species_order is not None else detected_order
+#     order = [sp for sp in order if sp in label_dict]
 
     aln_len = len(next(iter(genome_seqs.values())))
     num_sp  = len(order)

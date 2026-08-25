@@ -57,7 +57,7 @@ def _run_subsampled_mwu_distances(gc_vals, t_vals, n_subsamples=10, seed_base=42
     for i in range(n_subsamples):
         seed = seed_base + i
         rng = np.random.default_rng(seed=seed)
-        t_sample = rng.choice(t_vals, size=min(n_gc, len(t_vals)), replace=False)
+        t_sample = rng.choice(t_vals, size=min(n_gc, len(t_vals)), replace=True)
         _, p = mannwhitneyu(gc_vals, t_sample, alternative='two-sided')
         draws.append({'seed': seed, 't_sample': t_sample, 't_kb': t_sample / 1000.0})
         raw_ps.append(p)
