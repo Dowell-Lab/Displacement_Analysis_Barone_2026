@@ -164,7 +164,7 @@ def _run_subsampled_mannwhit(gc_df, t_df, column_prefix, n_subsamples=10):
         t_vals = t_col.sample(
             n=min(n_gc, len(t_col)),
             random_state=seed,
-            replace=True
+            replace=False
         ).values
         _, p = mannwhitneyu(gc_vals, t_vals, alternative='two-sided')
         p_values.append(p)
