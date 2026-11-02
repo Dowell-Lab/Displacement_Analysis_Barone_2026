@@ -14,10 +14,34 @@ def _load_distances(filepath):
     - File containing distance to downstream gene
     
     """
-    df = pd.read_csv(filepath, sep='\t', header=None)
-    distances = pd.to_numeric(df.iloc[:, -1], errors='coerce')
-    distances = distances[distances >= 0].dropna()
-    return distances.values
+#     df = pd.read_csv(filepath, sep='\t', header=None)
+#     distances = pd.to_numeric(df.iloc[:, -1], errors='coerce')
+#     distances = distances[distances >= 0].dropna()
+#     return distances.values
+
+    df = pd.read_csv(filepath, sep="\t", header=None)
+
+    # Read distance and exclude missing-neighbor records.
+    df["distance"] = pd.to_numeric(df.iloc[:, -1], errors="coerce")
+    df = df[df["distance"] >= 0].copy()
+
+    # Verify that repeated source genes have identical distances.
+    distances_per_gene = df.groupby(3)["distance"].nunique()
+    if (distances_per_gene > 1).any():
+        raise ValueError(
+            f"Some genes have multiple different distances in {filepath}"
+        )
+
+    # Retain one observation per source gene.
+    unique = df.drop_duplicates(subset=3)
+
+    print(
+        f"{filepath}\n"
+        f"  Valid rows: {len(df)}; unique genes: {len(unique)}; "
+        f"extra rows removed: {len(df) - len(unique)}"
+    )
+
+    return unique["distance"].to_numpy()
 
 
 def _format_pval_downstream(p, adjusted=True):

@@ -1224,7 +1224,7 @@ def scatter_mT_gc_colored(gc_df,
 
     # GC% bins in a separate legend box
     legend_bins = ax.legend(bin_handles, bin_labels_,
-                            title="GC% ±1kb of $\mu_T$",
+                            title="GC% ±500bp of $\mu_T$",
                             title_fontsize=11,
                             fontsize=10,
                             loc="upper left")

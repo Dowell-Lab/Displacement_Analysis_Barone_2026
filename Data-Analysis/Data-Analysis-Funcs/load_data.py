@@ -130,7 +130,7 @@ def obtain_plotting_dict_hg38(metadata_df, respath, genelist, genes_to_remove):
             sample_data = res_dict[sample]
             
             # read in filtered gene list (pipeline output)
-            genes_to_keep_path = f"/scratch/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering/filtered_genes/{experiment_name}/{genelist}"
+            genes_to_keep_path = f"/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering/filtered_genes/{experiment_name}/{genelist}"
             genes_to_keep = pd.read_csv(genes_to_keep_path, sep="\t", header=None)[0].tolist()
             print(len(genes_to_keep))
             
@@ -206,7 +206,7 @@ def obtain_plotting_dict_cross_species(metadata_df, respath, genelist, genes_to_
             sample_data = res_dict[sample]
             
             # read in filtered gene list
-            genes_to_keep_path = f"/scratch/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering-Cross-Species/filtered_genes/{experiment_name}/{genelist}"
+            genes_to_keep_path = f"/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering-Cross-Species/filtered_genes/{experiment_name}/{genelist}"
             genes_to_keep = pd.read_csv(genes_to_keep_path, sep="\t", header=None)[0].tolist()
             print(len(genes_to_keep))
             
@@ -294,7 +294,7 @@ def pull_out_params_meta_samples_3Seq_HeLa_HEK(base_path, annotation):
         # 3Seq starting point -- reference on a per-cell type basis
         if 'HeLa' in celltype:
             # read in annotation -- fix for length col in 3Seq
-            ann = pd.read_csv('/scratch/Users/geba9152/LIET-3end-analysis/gene_curation_MANE/annotations/HeLa-Specific/HeLa-Specific-3SeqPAS.liet.ann', sep = "\t", header = None)
+            ann = pd.read_csv('/Users/geba9152/LIET-3end-analysis/gene_curation_MANE/annotations/HeLa-Specific/HeLa-Specific-3SeqPAS.liet.ann', sep = "\t", header = None)
 #             ann = pd.read_csv('/scratch/Users/geba9152/LIET-3end-analysis/gene_curation_MANE/annotations/HeLa-Specific/HeLa-Specific-3p-UTR.liet.ann', sep = "\t", header = None)
 
             ann[6] = abs(ann[1] - ann[2])  
@@ -316,7 +316,7 @@ def pull_out_params_meta_samples_3Seq_HeLa_HEK(base_path, annotation):
             
         else: 
             # read in annotation
-            ann = pd.read_csv('/scratch/Users/geba9152/LIET-3end-analysis/gene_curation_MANE/annotations/HEK293T-HEK293-Specific/HEK293T-HEK293-Specific-3SeqPAS.liet.ann', sep = "\t", header = None)
+            ann = pd.read_csv('/Users/geba9152/LIET-3end-analysis/gene_curation_MANE/annotations/HEK293T-HEK293-Specific/HEK293T-HEK293-Specific-3SeqPAS.liet.ann', sep = "\t", header = None)
             ann[6] = abs(ann[1] - ann[2])  
             
             ann = ann[[3,6]]
@@ -376,7 +376,7 @@ def obtain_plotting_dict_hg38_3Seq_HeLa_HEK(metadata_df, respath, genelist, gene
             sample_data = res_dict[sample]
             
             # read in filtered gene list (pipeline output)
-            genes_to_keep_path = f"/scratch/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering/filtered_genes/{experiment_name}/{genelist}"
+            genes_to_keep_path = f"/Users/geba9152/LIET-3end-analysis/LIET-Gene-Filtering/filtered_genes/{experiment_name}/{genelist}"
             genes_to_keep = pd.read_csv(genes_to_keep_path, sep="\t", header=None)[0].tolist()
             print(len(genes_to_keep))
             
